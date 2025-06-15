@@ -1,9 +1,13 @@
-const http = require('http');
+const express = require('express');
+const roomTypeRoute = require('./routes/roomTypeRoute');
+require('dotenv').config();
 
-const server = http.createServer((req, res) => {
-  res.end('KT or T1 MSI go go!!');
-});
+const app = express();
+const PORT = process.env.PORT || 3000;
 
-server.listen(3000, () => {
-  console.log('Server is running at http://localhost:3000');
+app.use(express.json()); // để đọc req.body
+app.use('/', roomTypeRoute); // prefix API
+
+app.listen(PORT, () => {
+  console.log(`🚀 Server running at http://localhost:${PORT}`);
 });
