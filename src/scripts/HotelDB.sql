@@ -10,3 +10,9 @@ CREATE TABLE RoomType(
     roomPrice DECIMAL(10, 2),
     surchargeRate DECIMAL(10, 2) DEFAULT 0.00
 );
+
+CREATE TABLE Service(
+    serviceID VARCHAR(10) PRIMARY KEY,
+    serviceName VARCHAR(100),
+    servicePrice DECIMAL(10, 2)
+);
