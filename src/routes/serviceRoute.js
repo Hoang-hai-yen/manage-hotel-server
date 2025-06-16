@@ -4,7 +4,7 @@ const roomTypeController = require('../controllers/serviceController');
 
 router.get('/', roomTypeController.getServices);
 router.post('/', roomTypeController.createService);
-router.put('/:serviceID', roomTypeController.updateService);
-router.delete('/:serviceID', roomTypeController.deleteService);
+router.put('/:service_id', roomTypeController.updateService);
+router.delete('/:service_id', roomTypeController.deleteService);
 
 module.exports = router;
