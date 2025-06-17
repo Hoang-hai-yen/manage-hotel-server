@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: Jun 16, 2025 at 07:48 AM
+-- Generation Time: Jun 17, 2025 at 09:59 AM
 -- Server version: 10.4.32-MariaDB
 -- PHP Version: 8.2.12
 
@@ -32,6 +32,8 @@ SET time_zone = "+00:00";
 CREATE TABLE `accountbooking` (
   `guest_account_id` int(11) NOT NULL,
   `full_name` varchar(100) DEFAULT NULL,
+  `cccd` varchar(20) DEFAULT NULL,
+  `guest_type_id` int(11) DEFAULT NULL,
   `gender` enum('Male','Female') DEFAULT NULL,
   `birthday` date DEFAULT NULL,
   `email` varchar(100) DEFAULT NULL,
@@ -39,6 +41,13 @@ CREATE TABLE `accountbooking` (
   `password_hash` text DEFAULT NULL,
   `created_at` timestamp NOT NULL DEFAULT current_timestamp()
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+--
+-- Dumping data for table `accountbooking`
+--
+
+INSERT INTO `accountbooking` (`guest_account_id`, `full_name`, `cccd`, `guest_type_id`, `gender`, `birthday`, `email`, `phone_number`, `password_hash`, `created_at`) VALUES
+(1, 'Zeru Nagiryu', NULL, NULL, 'Male', '2003-08-16', 'zerunagiryu@gmail.com', '0987654321', '$2b$10$eAHH1LmalDThUdT6UqogQuR1FnGKMnPQEVXiYgLOXrMCspHz7Z/UW', '2025-06-16 17:17:28');
 
 -- --------------------------------------------------------
 
@@ -51,9 +60,15 @@ CREATE TABLE `adminaccounts` (
   `full_name` varchar(100) NOT NULL,
   `phone_number` varchar(15) NOT NULL,
   `password_hash` text NOT NULL,
-  `role` enum('manager','receptionist') NOT NULL,
-  `created_at` timestamp NOT NULL DEFAULT current_timestamp()
+  `role` enum('manager','receptionist') NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+--
+-- Dumping data for table `adminaccounts`
+--
+
+INSERT INTO `adminaccounts` (`admin_id`, `full_name`, `phone_number`, `password_hash`, `role`) VALUES
+('23521847', 'Hoàng Hải Yến', '0908003798', '$2a$10$n/tOoCHQVgp0r9GxVSC/j.v0O8k6ZSXLUNdh/4UXjfM2Prza8deQO', 'receptionist');
 
 -- --------------------------------------------------------
 
@@ -243,6 +258,13 @@ CREATE TABLE `roomtypes` (
   `surcharge_rate` decimal(5,2) DEFAULT 0.00 CHECK (`surcharge_rate` >= 0)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
+--
+-- Dumping data for table `roomtypes`
+--
+
+INSERT INTO `roomtypes` (`room_type_id`, `room_type_name`, `room_size`, `bed`, `note`, `max_guests`, `price_room`, `surcharge_rate`) VALUES
+('RT01', 'Deluxe', 25, '2 Queen bed size', 'Balcony', 3, 120.00, 1.25);
+
 -- --------------------------------------------------------
 
 --
@@ -271,6 +293,13 @@ CREATE TABLE `services` (
   `service_name` varchar(100) DEFAULT NULL,
   `price_service` decimal(10,2) DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+--
+-- Dumping data for table `services`
+--
+
+INSERT INTO `services` (`service_id`, `service_name`, `price_service`) VALUES
+('S01', 'Breakfast', 50.00);
 
 --
 -- Indexes for dumped tables
@@ -392,7 +421,7 @@ ALTER TABLE `services`
 -- AUTO_INCREMENT for table `accountbooking`
 --
 ALTER TABLE `accountbooking`
-  MODIFY `guest_account_id` int(11) NOT NULL AUTO_INCREMENT;
+  MODIFY `guest_account_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
 
 --
 -- AUTO_INCREMENT for table `bookingcompanions`
