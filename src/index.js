@@ -3,6 +3,7 @@ const roomTypeRoute = require('./routes/roomTypeRoute');
 const serviceRoute = require('./routes/serviceRoute');
 const authRoutes = require('./routes/authRoute');
 const bookingwebRoute = require('./routes/bookingwebRoute');
+const frontdeskRoute = require('./routes/frontdeskRoute/createBookingRoute');
 
 require('dotenv').config();
 
@@ -15,6 +16,7 @@ app.use('/', authRoutes);              // Login, register
 app.use('/roomType', roomTypeRoute);  // RoomType APIs
 app.use('/service', serviceRoute);    // Service APIs
 app.use('/bookingweb', bookingwebRoute);
+app.use('/frontdesk', frontdeskRoute); 
 
 app.listen(PORT, () => {
   console.log(`🚀 Server running at http://localhost:${PORT}`);
