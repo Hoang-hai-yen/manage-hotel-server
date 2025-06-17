@@ -9,4 +9,7 @@ router.get('/profile', auth, guestAuth.getProfile);
 router.post('/forgot-password', guestAuth.forgotPassword);
 router.post('/verify-otp', guestAuth.verifyOtp);
 
+router.get('/profile', auth, guestAuth.profile.get);
+router.put('/profile', auth, guestAuth.profile.update);
+router.delete('/profile', auth, guestAuth.profile.delete);
 module.exports = router;
