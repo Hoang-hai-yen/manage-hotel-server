@@ -1,6 +1,6 @@
 const db = require('../../db');
 const bcrypt = require('bcryptjs');
-const otps = require('./otpStore');
+const otps = require('./otpStoreController');
 
 module.exports = async (req, res) => {
   const { email, otp, new_password } = req.body;

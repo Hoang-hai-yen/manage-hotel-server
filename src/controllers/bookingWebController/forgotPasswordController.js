@@ -2,7 +2,7 @@ const db = require('../../db');
 const nodemailer = require('nodemailer');
 require('dotenv').config();
 
-const otps = require('./otpStore');
+const otps = require('./otpStoreController');
 
 module.exports = (req, res) => {
   const { email } = req.body;
