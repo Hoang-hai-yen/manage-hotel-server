@@ -16,7 +16,8 @@ module.exports = (req, res) => {
 
     const token = jwt.sign(
       { guest_account_id: user.guest_account_id },
-      process.env.JWT_SECRET
+      process.env.JWT_SECRET,
+      { expiresIn: '1h' }
     );
 
     res.json({ token });
