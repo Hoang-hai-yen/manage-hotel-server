@@ -3,7 +3,7 @@ const roomTypeRoute = require('./routes/roomTypeRoute');
 const serviceRoute = require('./routes/serviceRoute');
 const authRoutes = require('./routes/authRoute');
 const bookingwebRoute = require('./routes/bookingwebRoute');
-const frontdeskRoute = require('./routes/frontdeskRoute/createBookingRoute');
+const frontdeskRoute = require('./routes/frontDeskRoute');
 
 require('dotenv').config();
 
