@@ -23,6 +23,17 @@ Cài đặt bằng lệnh:
 npm install express mysql2 dotenv jsonwebtoken bcryptjs nodemailer
 ```
 
+## 📁 Cấu trúc thư mục
+
+```
+project-root/
+├── controllers/
+├── middlewares/
+├── routes/
+├── db.js
+├── .env
+└── index.js
+```
 
 ## ⚙️ Cài đặt
 
@@ -97,7 +108,6 @@ Mặc định server sẽ chạy tại: `http://localhost:3000`
 | GET    | /frontdesk/bookings             | Lấy tất cả booking            |
 | GET    | /frontdesk/booking/:id          | Xem chi tiết 1 booking        |
 | PUT    | /frontdesk/booking/:id          | Cập nhật thông tin booking    |
-| DELETE | /frontdesk/booking/:id          | Xóa thông tin booking         |
 
 ---
 
@@ -127,22 +137,44 @@ Mặc định server sẽ chạy tại: `http://localhost:3000`
 
 ---
 
-## 🧪 Test API với Postman
 
-Ví dụ đăng ký tài khoản khách:
 
-```http
-POST http://localhost:3000/bookingweb/signup
-Content-Type: application/json
-Body:
-{
-  "full_name": "Zeru",
-  "cccd": "123456789",
-  "guest_type_id": 1,
-  "gender": "Male",
-  "birthday": "2000-01-01",
-  "email": "zeru@example.com",
-  "phone_number": "0987654321",
-  "password": "123456"
-}
+## 🗄️ Hướng dẫn cài đặt Database MySQL
+
+### 1. Tạo database trống
+
+Mở `phpMyAdmin` hoặc công cụ MySQL khác
+
+> Hoặc bạn có thể tạo trực tiếp khi import file `.sql` (bước sau).
+
+---
+
+### 2. Import file SQL có sẵn
+
+Giả sử file bạn có tên là `hotel_schema.sql` nằm trong thư mục gốc của project (đã push lên Git), thực hiện theo một trong hai cách:
+
+#### ✅ Dùng phpMyAdmin
+
+1. Truy cập `http://localhost/phpmyadmin`
+2. Chọn database `HotelDB`
+3. Chọn tab **Import**
+4. Upload file `hotel_schema.sql`
+5. Nhấn **Go** để hoàn tất
+
+#### ✅ Cách 2: Dùng dòng lệnh MySQL
+
+```bash
+mysql -u root -p HotelDB < hotel_schema.sql
 ```
+
+> Thay `root` và `HotelDB` bằng thông tin phù hợp với máy của bạn
+
+---
+
+### 3. Khởi động lại backend
+
+```bash
+npm start
+```
+
+Sau khi import, hệ thống backend có thể hoạt động bình thường với các bảng và dữ liệu đã có sẵn.
