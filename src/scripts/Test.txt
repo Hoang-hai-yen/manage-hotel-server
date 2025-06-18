@@ -1,0 +1,80 @@
+POST room type
+{
+  "room_type_id": "3s",
+  "room_type_name": "Half",
+  "room_size": 75.5,
+  "bed": "Queen bed",
+  "note": "Has balconys",
+  "max_guests": 5,
+  "price_room": 499,
+  "surcharge_rate": 1
+}
+
+PUT room type
+{
+  "room_type_name": "Half",
+  "room_size": 75.5,
+  "bed": "Prince bed",
+  "note": "Has balcony",
+  "max_guests": 5,
+  "price_room": 499,
+  "surcharge_rate": 1
+}
+
+POST service
+{
+  "service_id": "3",
+  "service_name": "Buffet",
+  "price_service": 100
+}
+
+PUT service
+{
+  "service_name": "Sunbath",
+  "price_service": 100
+}
+
+POST room
+{
+  "room_id": "2",
+  "room_type_id": "2",  
+  "room_floor": 4,
+  "booking_id": null,
+  "is_booked": 0
+}
+
+PUT room
+{
+  "room_type_id": "2",  
+  "room_floor": 5,
+  "booking_id": null,
+  "is_booked": 0
+}
+
+POST guest type
+{
+  "guest_type_name": "NAT",
+  "surcharge_rate": "7.00"
+}
+
+PUT guest type
+{
+  "guest_type_name": "San",
+  "surcharge_rate": "7.00"
+}
+
+POST request service
+{
+  "room_id": "R01", 
+  "service_id": "S01", 
+  "amount": 1, 
+  "note": 2, 
+  "booking_id": null
+}
+
+PUT request service
+{
+  "amount": 1, 
+  "note": 3, 
+  "status": "Confirmed"
+}

@@ -1,12 +1,12 @@
 const express = require('express');
 const router = express.Router();
-const roomTypeController = require('../controllers/serviceController');
-const auth = require('../middlewares/adminAuth');
+const serviceController = require('../controllers/serviceController');
+// const auth = require('../middlewares/adminAuth');
 
-router.use(auth);
-router.get('/', roomTypeController.getServices);
-router.post('/', roomTypeController.createService);
-router.put('/:serviceID', roomTypeController.updateService);
-router.delete('/:serviceID', roomTypeController.deleteService);
+// router.use(auth);
+router.get('/', serviceController.getServices);
+router.post('/', serviceController.createService);
+router.put('/:service_id', serviceController.updateService);
+router.delete('/:service_id', serviceController.deleteService);
 
 module.exports = router;
