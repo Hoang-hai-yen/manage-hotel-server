@@ -56,6 +56,20 @@ exports.createBooking = async (req, res) => {
       );
     }
 
+    await db.promise().query(
+  `INSERT INTO guests (fullname, id_card, guest_type_id, source_type, booking_id, room_id, status)
+   VALUES (?, ?, ?, 'Booking', ?, ?, 'upcoming')`,
+  [guest_fullname, guest_id_card, guest_type_id, booking_id, room_id || null]
+);
+
+for (const c of companions) {
+  await db.promise().query(
+    `INSERT INTO guests (fullname, id_card, guest_type_id, source_type, booking_id, room_id, status)
+     VALUES (?, ?, ?, 'Companion', ?, ?, 'upcoming')`,
+    [c.fullname, c.id_card, c.guest_type_id, booking_id, room_id || null]
+  );
+}
+
 const [bookingRows] = await db.promise().query(
   `SELECT b.*, rt.room_type_name, gt.guest_type_name
    FROM bookings b
@@ -167,6 +181,19 @@ exports.updateBooking = async (req, res) => {
       [guest_fullname, guest_id_card, guest_phone, guest_email, guest_address, guest_type_id,
         check_in, check_out, room_id, room_type_id, adults, children, nightly_rate, payment_method, status, booking_id]
     );
+
+    const statusMap = {
+  'Due In': 'upcoming',
+  'Checked In': 'staying',
+  'Checked Out': 'left'
+};
+
+const guestStatus = statusMap[status];
+
+await db.promise().query(
+  `UPDATE guests SET status = ? WHERE booking_id = ?`,
+  [guestStatus, booking_id]
+);
 
     res.json({ message: 'Booking updated successfully' });
   } catch (err) {

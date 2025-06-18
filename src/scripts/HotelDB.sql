@@ -237,9 +237,17 @@ CREATE TABLE `roomno` (
   `room_id` varchar(10) NOT NULL,
   `room_type_id` varchar(10) DEFAULT NULL,
   `room_floor` int(11) DEFAULT NULL CHECK (`room_floor` > 0),
-  `booking_id` int(11) DEFAULT NULL,
   `is_booked` tinyint(1) DEFAULT 0
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+CREATE TABLE `room_bookings` (
+  `booking_id` INT NOT NULL,
+  `room_id` VARCHAR(10) NOT NULL,
+  PRIMARY KEY (`booking_id`, `room_id`),
+  FOREIGN KEY (`booking_id`) REFERENCES `bookings` (`booking_id`) ON DELETE CASCADE,
+  FOREIGN KEY (`room_id`) REFERENCES `roomno` (`room_id`) ON DELETE CASCADE
+);
+
 
 -- --------------------------------------------------------
 
