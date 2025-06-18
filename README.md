@@ -97,6 +97,7 @@ Mặc định server sẽ chạy tại: `http://localhost:3000`
 | GET    | /frontdesk/bookings             | Lấy tất cả booking            |
 | GET    | /frontdesk/booking/:id          | Xem chi tiết 1 booking        |
 | PUT    | /frontdesk/booking/:id          | Cập nhật thông tin booking    |
+| DELETE | /frontdesk/booking/:id          | Xóa thông tin booking         |
 
 ---
 
