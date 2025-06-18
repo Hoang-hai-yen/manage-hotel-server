@@ -4,7 +4,7 @@ exports.createBooking = async (req, res) => {
   const {
     guest_fullname, guest_id_card, guest_phone, guest_email, guest_address,
     guest_type_id, check_in, check_out, room_type_id,
-    adults, children, payment_method, room_id, companions = []
+    adults, children, payment_method, room_id, status = 'Due In', companions = []
   } = req.body;
 
   if (!guest_fullname || !guest_id_card || !check_in || !check_out || !room_type_id || !adults)
@@ -36,16 +36,15 @@ exports.createBooking = async (req, res) => {
 
     const [result] = await db.promise().query(
       `INSERT INTO bookings 
-        (guest_fullname, guest_id_card, guest_phone, guest_email, guest_address, guest_type_id,
-         check_in, check_out, room_id, recommended_rooms, room_type_id, adults, children,
-         nightly_rate, payment_method, status) 
-       VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, 'Due In')`,
-      [
-        guest_fullname, guest_id_card, guest_phone, guest_email, guest_address, guest_type_id,
-        check_in, check_out, room_id || null, recommended_rooms, room_type_id, adults, children,
-        nightly_rate, payment_method
-      ]
-    );
+      (guest_fullname, guest_id_card, guest_phone, guest_email, guest_address, guest_type_id, check_in, check_out, room_id, recommended_rooms, room_type_id, adults, children, nightly_rate, payment_method, status) 
+      VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
+  [
+    guest_fullname, guest_id_card, guest_phone, guest_email, guest_address, guest_type_id,
+    check_in, check_out, room_id || null, recommended_rooms, room_type_id, adults, children,
+    nightly_rate, payment_method, status
+  ]
+);
+
     const booking_id = result.insertId;
 
     for (const c of companions) {
@@ -57,14 +56,142 @@ exports.createBooking = async (req, res) => {
       );
     }
 
-    res.status(201).json({
-      message: 'Booking created successfully',
-      booking_id,
-      recommended_rooms: suitableRooms
-    });
+const [bookingRows] = await db.promise().query(
+  `SELECT b.*, rt.room_type_name, gt.guest_type_name
+   FROM bookings b
+   LEFT JOIN roomtypes rt ON b.room_type_id = rt.room_type_id
+   LEFT JOIN guest_types gt ON b.guest_type_id = gt.guest_type_id
+   WHERE b.booking_id = ?`,
+  [booking_id]
+);
+
+const [companionRows] = await db.promise().query(
+  `SELECT fullname, id_card, address, guest_type_id 
+   FROM bookingcompanions 
+   WHERE booking_id = ?`,
+  [booking_id]
+);
+
+res.status(201).json({
+  message: 'Booking created successfully',
+  ...bookingRows[0],
+  companions: companionRows
+});
+
 
   } catch (err) {
     console.error(err);
     res.status(500).json({ message: 'Server error', error: err.message });
+  }
+};
+
+async function autoUpdateDueOutStatus() {
+  try {
+    await db.promise().query(
+      `UPDATE bookings 
+       SET status = 'Due Out' 
+       WHERE status = 'Checked In' 
+       AND DATEDIFF(check_out, CURDATE()) <= 1`
+    );
+  } catch (err) {
+    console.error('Failed to update due out status:', err.message);
+  }
+}
+
+// GET all bookings (cho UI hiển thị)
+exports.getAllBookings = async (req, res) => {
+  try {
+    await autoUpdateDueOutStatus(); 
+
+    const [rows] = await db.promise().query(`
+      SELECT booking_id, guest_fullname, room_id, room_type_id, check_in, check_out, status
+      FROM bookings
+    `);
+    res.json(rows);
+  } catch (err) {
+    res.status(500).json({ error: 'Failed to fetch bookings' });
+  }
+};
+
+exports.getBookingById = async (req, res) => {
+  const booking_id = req.params.id;
+
+  try {
+    const [rows] = await db.promise().query(
+      `SELECT b.*, 
+              rt.room_type_name, 
+              gt.guest_type_name
+       FROM bookings b
+       LEFT JOIN roomtypes rt ON b.room_type_id = rt.room_type_id
+       LEFT JOIN guest_types gt ON b.guest_type_id = gt.guest_type_id
+       WHERE b.booking_id = ?`,
+      [booking_id]
+    );
+
+    if (rows.length === 0)
+      return res.status(404).json({ message: 'Booking not found' });
+
+    const booking = rows[0];
+
+    const [companions] = await db.promise().query(
+      `SELECT fullname, id_card, address, guest_type_id FROM bookingcompanions WHERE booking_id = ?`,
+      [booking_id]
+    );
+
+    res.json({ ...booking, companions });
+
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ error: 'Failed to fetch booking' });
+  }
+};
+
+
+
+// PUT update booking 
+exports.updateBooking = async (req, res) => {
+  const booking_id = req.params.id;
+  const {
+    guest_fullname, guest_id_card, guest_phone, guest_email, guest_address,
+    guest_type_id, check_in, check_out, room_id, room_type_id,
+    adults, children, nightly_rate, payment_method, status
+  } = req.body;
+
+  try {
+    await db.promise().query(
+      `UPDATE bookings SET
+        guest_fullname=?, guest_id_card=?, guest_phone=?, guest_email=?, guest_address=?, guest_type_id=?,
+        check_in=?, check_out=?, room_id=?, room_type_id=?, adults=?, children=?,
+        nightly_rate=?, payment_method=?, status=?
+      WHERE booking_id = ?`,
+      [guest_fullname, guest_id_card, guest_phone, guest_email, guest_address, guest_type_id,
+        check_in, check_out, room_id, room_type_id, adults, children, nightly_rate, payment_method, status, booking_id]
+    );
+
+    res.json({ message: 'Booking updated successfully' });
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ error: 'Failed to update booking' });
+  }
+};
+
+exports.deleteBooking = async (req, res) => {
+  const booking_id = req.params.id;
+
+  try {
+    await db.promise().query(
+      'DELETE FROM bookingcompanions WHERE booking_id = ?',
+      [booking_id]
+    );
+
+    await db.promise().query(
+      'DELETE FROM bookings WHERE booking_id = ?',
+      [booking_id]
+    );
+
+    res.json({ message: 'Booking deleted successfully' });
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ error: 'Failed to delete booking' });
   }
 };
