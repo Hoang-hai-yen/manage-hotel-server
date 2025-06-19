@@ -47,6 +47,13 @@ exports.createBooking = async (req, res) => {
 
     const booking_id = result.insertId;
 
+    if (room_id) {
+  await db.promise().query(
+    `INSERT INTO room_bookings (booking_id, room_id) VALUES (?, ?)`,
+    [booking_id, room_id]
+  );
+}
+
     for (const c of companions) {
       await db.promise().query(
         `INSERT INTO bookingcompanions 

@@ -11,7 +11,7 @@ USE HotelDB;
 
 SET SQL_MODE = "NO_AUTO_VALUE_ON_ZERO";
 START TRANSACTION;
-SET time_zone = "+00:00";
+SET time_zone = "+07:00";
 
 
 /*!40101 SET @OLD_CHARACTER_SET_CLIENT=@@CHARACTER_SET_CLIENT */;
@@ -240,15 +240,6 @@ CREATE TABLE `roomno` (
   `is_booked` tinyint(1) DEFAULT 0
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
-CREATE TABLE `room_bookings` (
-  `booking_id` INT NOT NULL,
-  `room_id` VARCHAR(10) NOT NULL,
-  PRIMARY KEY (`booking_id`, `room_id`),
-  FOREIGN KEY (`booking_id`) REFERENCES `bookings` (`booking_id`) ON DELETE CASCADE,
-  FOREIGN KEY (`room_id`) REFERENCES `roomno` (`room_id`) ON DELETE CASCADE
-);
-
-
 -- --------------------------------------------------------
 
 --
@@ -397,8 +388,7 @@ ALTER TABLE `reservations`
 --
 ALTER TABLE `roomno`
   ADD PRIMARY KEY (`room_id`),
-  ADD KEY `room_type_id` (`room_type_id`),
-  ADD KEY `fk_roomno_booking` (`booking_id`);
+  ADD KEY `room_type_id` (`room_type_id`);
 
 --
 -- Indexes for table `roomtypes`
@@ -540,7 +530,6 @@ ALTER TABLE `reservations`
 -- Constraints for table `roomno`
 --
 ALTER TABLE `roomno`
-  ADD CONSTRAINT `fk_roomno_booking` FOREIGN KEY (`booking_id`) REFERENCES `bookings` (`booking_id`) ON DELETE SET NULL ON UPDATE CASCADE,
   ADD CONSTRAINT `roomno_ibfk_1` FOREIGN KEY (`room_type_id`) REFERENCES `roomtypes` (`room_type_id`) ON DELETE CASCADE ON UPDATE CASCADE;
 
 --
@@ -550,6 +539,14 @@ ALTER TABLE `servicerequests`
   ADD CONSTRAINT `servicerequests_ibfk_1` FOREIGN KEY (`room_id`) REFERENCES `roomno` (`room_id`),
   ADD CONSTRAINT `servicerequests_ibfk_2` FOREIGN KEY (`service_id`) REFERENCES `services` (`service_id`),
   ADD CONSTRAINT `servicerequests_ibfk_3` FOREIGN KEY (`booking_id`) REFERENCES `bookings` (`booking_id`);
+
+CREATE TABLE `room_bookings` (
+  `booking_id` int(11) NOT NULL,
+  `room_id` varchar(10) NOT NULL,
+  PRIMARY KEY (`booking_id`, `room_id`),
+  FOREIGN KEY (`booking_id`) REFERENCES `bookings` (`booking_id`) ON DELETE CASCADE,
+  FOREIGN KEY (`room_id`) REFERENCES `roomno` (`room_id`) ON DELETE CASCADE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci; 
 COMMIT;
 
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;

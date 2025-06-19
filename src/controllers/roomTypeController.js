@@ -56,8 +56,8 @@ exports.getRoomsByRoomType = (req, res) => {
 };
 
 exports.createRoomByRoomType = (req, res) => {
-  const [ room_type_id ] = req.params
-  const { room_id, room_floor, booking_id, is_booked } = req.body;
+  const { room_type_id } = req.params
+  const { room_id, room_floor, is_booked } = req.body;
 
   if (!room_id || !room_floor) {
     return res.status(400).json({ error: 'Missing required fields' });
@@ -74,12 +74,12 @@ exports.createRoomByRoomType = (req, res) => {
 
     // 2. Nếu hợp lệ, thực hiện INSERT
     const insertQuery = `
-      INSERT INTO roomno (room_id, room_type_id, room_floor, booking_id, is_booked)
-      VALUES (?, ?, ?, ?, ?)
+      INSERT INTO roomno (room_id, room_type_id, room_floor, is_booked)
+      VALUES (?, ?, ?, ?)
     `;
     db.query(
       insertQuery,
-      [room_id, room_type_id, room_floor, booking_id || null, is_booked || 0],
+      [room_id, room_type_id, room_floor, is_booked || 0],
       (err, result) => {
         if (err) return res.status(500).json({ error: 'Insert error', details: err });
 
@@ -89,7 +89,6 @@ exports.createRoomByRoomType = (req, res) => {
             room_id,
             room_type_id,
             room_floor,
-            booking_id: booking_id || null,
             is_booked: is_booked || 0
           }
         });
@@ -100,7 +99,7 @@ exports.createRoomByRoomType = (req, res) => {
 
 exports.updateRoomByRoomType = (req, res) => {
   const { room_type_id ,room_id } = req.params;
-  const { room_floor, booking_id, is_booked } = req.body;
+  const { room_floor, is_booked } = req.body;
 
   const checkQuery = 'SELECT * FROM roomtypes WHERE room_type_id = ?';
   db.query(checkQuery, [room_type_id], (err, results) => {
@@ -110,7 +109,7 @@ exports.updateRoomByRoomType = (req, res) => {
       return res.status(400).json({ error: 'room_type_id không tồn tại trong bảng roomtypes' });
     }
 
-    const insertQuery = 'UPDATE roomno SET room_floor=?, booking_id=?, is_booked=? WHERE room_id=?';
+    const insertQuery = 'UPDATE roomno SET room_floor=?, is_booked=? WHERE room_id=?';
     db.query(
     insertQuery,
     [room_floor, booking_id || null, is_booked || 0, room_id],
@@ -122,7 +121,6 @@ exports.updateRoomByRoomType = (req, res) => {
           room_id,
           room_type_id,
           room_floor,
-          booking_id: booking_id || null,
           is_booked: is_booked || 0
         }
        });
