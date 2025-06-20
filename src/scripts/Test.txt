@@ -1,80 +1,301 @@
-POST room type
+=========================
+✅ 1. API Đăng nhập quản lý (Admin)
+=========================
+
+[POST] http://localhost:3000/api/signin
 {
-  "room_type_id": "3s",
-  "room_type_name": "Half",
-  "room_size": 75.5,
-  "bed": "Queen bed",
-  "note": "Has balconys",
-  "max_guests": 5,
-  "price_room": 499,
-  "surcharge_rate": 1
+  "identifier": "admin123",      // Có thể là admin_id hoặc phone_number
+  "password": "admin_password"
 }
 
-PUT room type
+
+=========================
+✅ 2. API dành cho người dùng booking (/bookingweb)
+=========================
+
+👉 2.1 Đăng ký tài khoản
+[POST] http://localhost:3000/bookingweb/signup
 {
-  "room_type_name": "Half",
-  "room_size": 75.5,
-  "bed": "Prince bed",
-  "note": "Has balcony",
-  "max_guests": 5,
-  "price_room": 499,
-  "surcharge_rate": 1
+  "full_name": "Nguyen Van A",
+  "cccd": "123456789012",
+  "guest_type_id": 1,
+  "gender": "Male",
+  "birthday": "2000-01-01",
+  "email": "vana@example.com",
+  "phone_number": "0909123456",
+  "password": "mypassword"
 }
 
-POST service
+
+👉 2.2 Đăng nhập tài khoản
+[POST] http://localhost:3000/bookingweb/signin
 {
-  "service_id": "3",
-  "service_name": "Buffet",
-  "price_service": 100
+  "email": "vana@example.com",
+  "password": "mypassword"
 }
 
-PUT service
+
+👉 2.3 Gửi mã OTP (quên mật khẩu)
+[POST] http://localhost:3000/bookingweb/forgot-password
 {
-  "service_name": "Sunbath",
-  "price_service": 100
+  "email": "vana@example.com"
 }
 
-POST room
+
+👉 2.4 Xác minh OTP và đổi mật khẩu
+[POST] http://localhost:3000/bookingweb/verify-otp
 {
-  "room_id": "2",
-  "room_type_id": "2",  
+  "email": "vana@example.com",
+  "otp": "1234",
+  "new_password": "newsecurepassword"
+}
+
+
+=========================
+✅ 3. API Frontdesk (Quản lý đặt phòng & hóa đơn)
+=========================
+
+👉 3.1 Lấy tất cả bookings
+[GET] http://localhost:3000/api/frontdesk/bookings
+
+
+👉 3.2 Lấy chi tiết booking theo ID
+[GET] http://localhost:3000/api/frontdesk/bookings/1
+
+
+👉 3.3 Tạo booking mới
+[POST] http://localhost:3000/api/frontdesk/booking
+{
+  "guest_fullname": "Nguyen Van A",
+  "guest_id_card": "123456789012",
+  "guest_phone": "0909123456",
+  "guest_email": "vana@example.com",
+  "guest_address": "123 ABC, TP.HCM",
+  "guest_type_id": 1,
+  "check_in": "2025-06-25",
+  "check_out": "2025-06-28",
+  "room_type_id": 2,
+  "room_id": 201,
+  "recommended_rooms": "201,202",
+  "adults": 2,
+  "children": 1,
+  "payment_method": "Credit Card",
+  "status": "Due In",
+  "companions": [
+    {
+      "fullname": "Tran Van B",
+      "id_card": "234567890123",
+      "address": "456 XYZ, TP.HCM",
+      "guest_type_id": 2
+    }
+  ]
+}
+
+
+👉 3.4 Cập nhật booking theo ID
+[PUT] http://localhost:3000/api/frontdesk/booking/1
+{
+  "guest_fullname": "Nguyen Van A Updated",
+  "guest_id_card": "123456789012",
+  "guest_phone": "0909123456",
+  "guest_email": "vana@example.com",
+  "guest_address": "321 DEF, TP.HCM",
+  "guest_type_id": 1,
+  "check_in": "2025-06-26",
+  "check_out": "2025-06-29",
+  "room_id": 201,
+  "room_type_id": 2,
+  "adults": 2,
+  "children": 1,
+  "nightly_rate": 1500000,
+  "payment_method": "Cash",
+  "status": "Checked In"
+}
+
+
+👉 3.5 Xoá booking theo ID
+[DELETE] http://localhost:3000/api/frontdesk/booking/1
+
+
+👉 3.6 Lấy hóa đơn của một booking
+[GET] http://localhost:3000/api/frontdesk/invoice/1
+
+
+👉 3.7 Gợi ý phòng trống phù hợp
+[POST] http://localhost:3000/api/frontdesk/recommended-rooms
+{
+  "room_type_id": 2,
+  "check_in": "2025-06-25",
+  "check_out": "2025-06-28",
+  "adults": 2,
+  "children": 1
+}
+
+
+=========================
+✅ 4. API Guest (/guest)
+=========================
+
+👉 4.1 Lấy tất cả khách
+[GET] http://localhost:3000/api/guests
+
+
+=========================
+✅ 5. API Guest Type (/guestType)
+=========================
+
+👉 5.1 Lấy tất cả loại khách
+[GET] http://localhost:3000/api/guestsType
+
+
+👉 5.2 Tạo loại khách mới
+[POST] http://localhost:3000/api/guestsType
+{
+  "guest_type_name": "International",
+  "surcharge_rate": 0.25
+}
+
+
+👉 5.3 Cập nhật loại khách
+[PUT] http://localhost:3000/api/guestsType/1
+{
+  "guest_type_name": "Vietnamese",
+  "surcharge_rate": 0.1
+}
+
+
+👉 5.4 Xoá loại khách
+[DELETE] http://localhost:3000/api/guestsType/1
+
+
+=========================
+✅ 6. API Room (/room)
+=========================
+
+👉 6.1 Lấy tất cả phòng và tình trạng
+[GET] http://localhost:3000/api/room
+
+
+=========================
+✅ 7. API Room Type (/roomType)
+=========================
+
+👉 7.1 Lấy tất cả loại phòng
+[GET] http://localhost:3000/api/roomType
+
+
+👉 7.2 Tạo loại phòng mới
+[POST] http://localhost:3000/api/roomType
+{
+  "room_type_id": 1,
+  "room_type_name": "Deluxe King",
+  "room_size": "35m2",
+  "bed": "1 King Bed",
+  "note": "Có ban công",
+  "max_guests": 2,
+  "price_room": 1500000,
+  "surcharge_rate": 0.25
+}
+
+
+👉 7.3 Cập nhật loại phòng
+[PUT] http://localhost:3000/api/roomType/1
+{
+  "room_type_name": "Deluxe Twin",
+  "room_size": "32m2",
+  "bed": "2 Twin Beds",
+  "note": "Không hút thuốc",
+  "max_guests": 3,
+  "price_room": 1300000,
+  "surcharge_rate": 0.15
+}
+
+
+👉 7.4 Xoá loại phòng
+[DELETE] http://localhost:3000/api/roomType/1
+
+
+👉 7.5 Lấy tất cả phòng thuộc loại phòng
+[GET] http://localhost:3000/api/roomType/1
+
+
+👉 7.6 Thêm phòng vào loại phòng
+[POST] http://localhost:3000/api/roomType/1
+{
+  "room_id": 301,
+  "room_floor": 3,
+  "is_booked": 0
+}
+
+
+👉 7.7 Cập nhật phòng trong loại phòng
+[PUT] http://localhost:3000/api/roomType/1/301
+{
   "room_floor": 4,
-  "booking_id": null,
-  "is_booked": 0
+  "is_booked": 1
 }
 
-PUT room
+
+👉 7.8 Xoá phòng khỏi loại phòng
+[DELETE] http://localhost:3000/api/roomType/1/301
+
+
+=========================
+✅ 8. API Service (/service)
+=========================
+
+👉 8.1 Lấy tất cả dịch vụ
+[GET] http://localhost:3000/api/prices/service
+
+
+👉 8.2 Tạo dịch vụ mới
+[POST] http://localhost:3000/api/prices/service
 {
-  "room_type_id": "2",  
-  "room_floor": 5,
-  "booking_id": null,
-  "is_booked": 0
+  "service_id": 1,
+  "service_name": "Breakfast",
+  "price_service": 200000
 }
 
-POST guest type
+
+👉 8.3 Cập nhật dịch vụ
+[PUT] http://localhost:3000/api/prices/service/1
 {
-  "guest_type_name": "NAT",
-  "surcharge_rate": "7.00"
+  "service_name": "Buffet Breakfast",
+  "price_service": 250000
 }
 
-PUT guest type
+
+👉 8.4 Xoá dịch vụ
+[DELETE] http://localhost:3000/api/prices/service/1
+
+
+=========================
+✅ 9. API Service Request (/serviceRequest)
+=========================
+
+👉 9.1 Lấy tất cả yêu cầu dịch vụ
+[GET] http://localhost:3000/api/prices/serviceRequest
+
+
+👉 9.2 Tạo yêu cầu dịch vụ
+[POST] http://localhost:3000/api/prices/serviceRequest
 {
-  "guest_type_name": "San",
-  "surcharge_rate": "7.00"
+  "booking_id": 1,
+  "room_id": 101,
+  "service_id": 1,
+  "amount": 2,
+  "note": "Cho sáng mai"
 }
 
-POST request service
-{
-  "room_id": "R01", 
-  "service_id": "S01", 
-  "amount": 1, 
-  "note": 2, 
-  "booking_id": null
-}
 
-PUT request service
+👉 9.3 Cập nhật yêu cầu dịch vụ
+[PUT] http://localhost:3000/api/prices/serviceRequest/1
 {
-  "amount": 1, 
-  "note": 3, 
+  "amount": 3,
+  "note": "Cho thêm trứng",
   "status": "Confirmed"
 }
+
+
+👉 9.4 Xoá yêu cầu dịch vụ
+[DELETE] http://localhost:3000/api/prices/serviceRequest/1
