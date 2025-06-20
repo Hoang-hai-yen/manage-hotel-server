@@ -1,10 +1,10 @@
-const db = require('../../db');
+const db = require('../db');
 
 exports.createBooking = async (req, res) => {
   const {
     guest_fullname, guest_id_card, guest_phone, guest_email, guest_address,
     guest_type_id, check_in, check_out, room_type_id,
-    adults, children, payment_method, room_id, status = 'Due In', companions = []
+    adults, children, payment_method, room_id, recommended_rooms, status = 'Due In', companions = []
   } = req.body;
 
   if (!guest_fullname || !guest_id_card || !check_in || !check_out || !room_type_id || !adults)
@@ -23,16 +23,20 @@ exports.createBooking = async (req, res) => {
     const { nightly_rate, max_guests } = roomTypeRows[0];
     if (parseInt(adults) < 1)
       return res.status(400).json({ message: 'At least 1 adult is required' });
+    if (room_id) {
+      const [conflict] = await db.promise().query(`
+        SELECT 1 FROM room_bookings rb
+        JOIN bookings b ON rb.booking_id = b.booking_id
+        WHERE rb.room_id = ?
+        AND (? < b.check_out AND ? > b.check_in)
+    `, [room_id, check_in, check_out]);
 
-    const [roomRows] = await db.promise().query(
-      `SELECT room_id FROM roomno 
-       WHERE room_type_id = ? AND is_booked = 0`,
-      [room_type_id]
-    );
-    const suitableRooms = roomRows
-      .filter(() => totalGuests <= max_guests + 1)
-      .map(r => r.room_id);
-    const recommended_rooms = suitableRooms.join(',');
+  if (conflict.length > 0) {
+    return res.status(400).json({ message: 'This room is already booked during the selected dates' });
+  }
+}
+
+    
 
     const [result] = await db.promise().query(
       `INSERT INTO bookings 
