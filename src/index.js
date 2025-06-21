@@ -1,5 +1,6 @@
 const express = require('express');
 const frontdeskRoute = require('./routes/frontDeskRoute');
+const reservationRoute = require('./routes/reservationRoute');
 const guestRoute = require('./routes/guestRoute');
 const roomTypeRoute = require('./routes/roomTypeRoute');
 const serviceRoute = require('./routes/serviceRoute');
@@ -17,7 +18,8 @@ const PORT = process.env.PORT || 3000;
 app.use(express.json());
 
 app.use('/api', authRoutes);              // Login, register
-app.use('/api/frontdesk', frontdeskRoute); 
+app.use('/api/frontdesk', frontdeskRoute);
+app.use('/api/reservation', reservationRoute); // Reservation APIs 
 app.use('/api/guests', guestRoute); 
 app.use('/api/room', roomRoute); // Room
 app.use('/api/serviceRequest', serviceRequestRoute); // Request Service

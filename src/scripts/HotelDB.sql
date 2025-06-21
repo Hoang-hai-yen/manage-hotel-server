@@ -7,6 +7,8 @@
 -- Server version: 10.4.32-MariaDB
 -- PHP Version: 8.2.12
 
+USE HotelDB;
+
 SET SQL_MODE = "NO_AUTO_VALUE_ON_ZERO";
 START TRANSACTION;
 SET time_zone = "+00:00";
@@ -272,6 +274,7 @@ CREATE TABLE `reservations` (
   `declined_reason` text DEFAULT NULL,
   `reservation_note` text DEFAULT NULL,
   `recommended_rooms` text DEFAULT NULL,
+  `assigned_room` text DEFAULT NULL,
   `created_at` timestamp NOT NULL DEFAULT current_timestamp()
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
