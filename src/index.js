@@ -10,6 +10,7 @@ const bookingwebRoute = require('./routes/bookingwebRoute');
 const roomRoute = require('./routes/roomRoute');
 const guestTypeRoute = require('./routes/guestTypeRoute');
 const reportRoute = require('./routes/reportRoute');
+const profileRoute = require('./routes/profileRoute');  
 
 require('dotenv').config();
 
@@ -29,6 +30,7 @@ app.use('/api/prices/roomType', roomTypeRoute);  // RoomType APIs
 app.use('/api/prices/service', serviceRoute);    // Service APIs
 app.use('/api/report', reportRoute); // Report APIs
 app.use('/api/bookingweb', bookingwebRoute);
+app.use('/api/bookingweb/profile', profileRoute);  
 
 app.listen(PORT, () => {
   console.log(`🚀 Server running at http://localhost:${PORT}`);

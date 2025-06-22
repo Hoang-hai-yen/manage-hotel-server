@@ -2,11 +2,10 @@ const db = require('../../db');
 const bcrypt = require('bcryptjs');
 
 module.exports = async (req, res) => {
-  const {
+    const {
     full_name, cccd, guest_type_id,
-    gender, birthday, email,
-    phone_number, password
-  } = req.body;
+    email, phone_number, password
+    } = req.body;
 
   db.query('SELECT * FROM accountbooking WHERE email = ?', [email], async (err, results) => {
     if (err) return res.status(500).json({ message: 'Server error', error: err });
@@ -16,10 +15,10 @@ module.exports = async (req, res) => {
 
     const hashedPassword = await bcrypt.hash(password, 10);
     db.query(
-      `INSERT INTO accountbooking 
-       (full_name, cccd, guest_type_id, gender, birthday, email, phone_number, password_hash) 
-       VALUES (?, ?, ?, ?, ?, ?, ?, ?)`,
-      [full_name, cccd, guest_type_id, gender, birthday, email, phone_number, hashedPassword],
+     `INSERT INTO accountbooking 
+      (full_name, cccd, guest_type_id, email, phone_number, password_hash) 
+       VALUES (?, ?, ?, ?, ?, ?)`,
+      [full_name, cccd, guest_type_id, email, phone_number, hashedPassword],
       (err) => {
         if (err) return res.status(500).json({ message: 'Failed to create account', error: err });
         res.status(201).json({ message: 'Account created successfully' });
