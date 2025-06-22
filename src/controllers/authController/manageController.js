@@ -12,33 +12,41 @@ exports.login = (req, res) => {
   `;
 
   db.query(query, [identifier, identifier], async (err, results) => {
-    if (err) return res.status(500).json({ message: 'Server error', error: err });
+    if (err) {
+      return res.status(500).json({ message: 'Server error', error: err });
+    }
 
     if (results.length === 0) {
       return res.status(401).json({ message: 'Wrong ID or phone number' });
     }
 
     const admin = results[0];
-    const isMatch = await bcrypt.compare(password, admin.password_hash);
+    
+    try {
+      const isMatch = await bcrypt.compare(password, admin.password_hash);
 
-    if (!isMatch) {
-      return res.status(401).json({ message: 'Wrong password' });
-    }
-
-    const token = jwt.sign(
-  { admin_id: admin.admin_id, role: admin.role },
-  process.env.JWT_SECRET
-);
-  
-
-    res.json({
-      message: 'Signed in successfully',
-      token,
-      admin: {
-        id: admin.admin_id,
-        full_name: admin.full_name,
-        role: admin.role
+      if (!isMatch) {
+        return res.status(401).json({ message: 'Wrong password' });
       }
-    });
+
+      const token = jwt.sign(
+        { admin_id: admin.admin_id, role: admin.role },
+        process.env.JWT_SECRET
+      );
+
+      return res.json({
+        message: 'Signed in successfully',
+        token,
+        admin: {
+          id: admin.admin_id,
+          full_name: admin.full_name,
+          role: admin.role
+        }
+      });
+
+    } catch (error) {
+      return res.status(500).json({ message: 'Password compare failed', error });
+    }
   });
 };
+

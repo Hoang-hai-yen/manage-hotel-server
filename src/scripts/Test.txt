@@ -6,7 +6,7 @@
 {
   "identifier": "admin123",      // Có thể là admin_id hoặc phone_number
   "password": "admin_password"
-}
+} 
 
 
 =========================
@@ -299,3 +299,44 @@
 
 👉 9.4 Xoá yêu cầu dịch vụ
 [DELETE] http://localhost:3000/api/prices/serviceRequest/1
+=========================
+✅ 10. API Profile (/profile)
+=========================
+
+🔒 Tất cả API bên dưới yêu cầu người dùng đã đăng nhập (Bearer Token)
+
+👉 10.1 Lấy thông tin tài khoản
+[GET] http://localhost:3000/api/profile
+Headers:
+  Authorization: Bearer <token>
+
+
+👉 10.2 Cập nhật thông tin cá nhân
+[PUT] http://localhost:3000/api/profile/personal
+Headers:
+  Authorization: Bearer <token>
+Body:
+{
+  "full_name": "Nguyen Van A",
+  "gender": "Male",
+  "birthday": "2000-01-01",
+  "cccd": "123456789012",
+  "guest_type_id": 1
+}
+
+
+👉 10.3 Cập nhật thông tin liên hệ
+[PUT] http://localhost:3000/api/profile/contact
+Headers:
+  Authorization: Bearer <token>
+Body:
+{
+  "email": "vana@example.com",
+  "phone_number": "0909123456"
+}
+
+
+👉 10.4 Xoá tài khoản
+[DELETE] http://localhost:3000/api/profile
+Headers:
+  Authorization: Bearer <token>
