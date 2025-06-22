@@ -1,4 +1,5 @@
 const db = require('../db');
+const PDFDocument = require("pdfkit");
 
 exports.getCheckInOutOverview = (req, res) => {
     const query = 
@@ -51,3 +52,62 @@ exports.getRevenueStats = (req, res) => {
         res.json(results);
     });
 }
+
+exports.exportReportWithChart = async (req, res) => {
+  try {
+    const { chartBase64 } = req.body;
+
+    // Lấy dữ liệu bookings
+    const [results] = await db.promise().query(
+      "SELECT booking_id, guest_fullname, check_in, check_out, status FROM bookings"
+    );
+
+    const doc = new PDFDocument({ margin: 30 });
+    res.setHeader("Content-Type", "application/pdf");
+    res.setHeader("Content-Disposition", 'attachment; filename="report.pdf"');
+
+    // 👇 Trang 1: Biểu đồ
+    doc.fontSize(18).text("Hotel Report", { align: "center" });
+    doc.moveDown();
+
+    if (chartBase64) {
+      const base64Data = chartBase64.replace(/^data:image\/png;base64,/, "");
+      const chartBuffer = Buffer.from(base64Data, "base64");
+      doc.image(chartBuffer, {
+        fit: [500, 300],
+        align: "center",
+      });
+    } else {
+      doc.fontSize(12).text("No chart image provided.", {
+        align: "center",
+      });
+    }
+
+    doc.addPage();
+
+    // 👇 Trang 2+: Danh sách Bookings
+    doc.fontSize(16).text("Bookings Report", { align: "center" });
+    doc.moveDown();
+    doc.fontSize(12).text("ID", 50, doc.y);
+    doc.text("Guest Name", 100, doc.y);
+    doc.text("Check In", 300, doc.y);
+    doc.text("Check Out", 410, doc.y);
+    doc.text("Status", 520, doc.y);
+    doc.moveDown(0.5);
+
+    results.forEach((row) => {
+      doc.text(row.booking_id, 50, doc.y);
+      doc.text(row.guest_fullname, 100, doc.y);
+      doc.text(new Date(row.check_in).toISOString().split("T")[0], 300, doc.y);
+      doc.text(new Date(row.check_out).toISOString().split("T")[0], 410, doc.y);
+      doc.text(row.status, 520, doc.y);
+      doc.moveDown();
+    });
+
+    doc.pipe(res);
+    doc.end();
+  } catch (error) {
+    console.error(error);
+    res.status(500).send("Error generating PDF");
+  }
+};

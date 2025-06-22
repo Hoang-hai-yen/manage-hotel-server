@@ -1,6 +1,7 @@
 require('dotenv').config();
 const db = require('../db');
 const nodemailer = require('nodemailer');
+const { io } = require('../index'); // Assuming you have an index.js that exports io
 
 exports.getReservations = (req, res) => {
     const query = 'SELECT * FROM reservations ORDER BY check_in DESC';
@@ -75,6 +76,8 @@ exports.createReservation = async (req, res) => {
             console.error('Error creating reservation:', err);
             return res.status(500).json({ error: 'Database error' });
         }
+        const bookingData = { reservation_id: result.insertId, guest_fullname, guest_phone, guest_email, guest_address, guest_type_id, check_in, check_out, room_type_id, number_of_rooms, adults, children, reservation_note }
+        io.emit('newReservation', bookingData); // Emit event to notify clients about the new reservation
         res.status(201).json({ message: 'Reservation created successfully', reservation_id: result.insertId });
     });
 

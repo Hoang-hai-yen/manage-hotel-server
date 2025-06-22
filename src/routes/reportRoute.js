@@ -8,5 +8,6 @@ router.get('/CheckInOut', reportController.getCheckInOutOverview);
 router.get('/RoomTypeStats', reportController.getRoomTypeStats);
 router.get('/ServiceStats', reportController.getServiceStats);
 router.get('/RevenueStats', reportController.getRevenueStats);
+router.post('/export', reportController.exportReportWithChart);
 
 module.exports = router;

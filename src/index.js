@@ -1,4 +1,12 @@
 const express = require('express');
+const http = require('http');
+const { Server } = require('socket.io');
+
+const app = express();
+const PORT = process.env.PORT || 3000;
+require('dotenv').config();
+
+
 const frontdeskRoute = require('./routes/frontDeskRoute');
 const reservationRoute = require('./routes/reservationRoute');
 const guestRoute = require('./routes/guestRoute');
@@ -12,10 +20,19 @@ const guestTypeRoute = require('./routes/guestTypeRoute');
 const reportRoute = require('./routes/reportRoute');
 const profileRoute = require('./routes/profileRoute');  
 
-require('dotenv').config();
-
-const app = express();
-const PORT = process.env.PORT || 3000;
+const server = http.createServer(app);
+const io = new Server(server, {
+  cors: {
+    origin: '*',
+    // methods: ['GET', 'POST'],
+  },
+});
+io.on('connection', (socket) => {
+  console.log('New client connected');
+  socket.on('disconnect', () => {
+    console.log('Client disconnected');
+  });
+});
 
 app.use(express.json());
 
@@ -35,3 +52,5 @@ app.use('/api/bookingweb/profile', profileRoute);
 app.listen(PORT, () => {
   console.log(`🚀 Server running at http://localhost:${PORT}`);
 });
+
+module.exports = { app, server, io }; // Export app and server for testing purposes
