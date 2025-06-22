@@ -136,3 +136,20 @@ exports.deleteRoomByRoomType = (req, res) => {
     res.json({ message: 'Room deleted' });
   });
 };
+
+exports.getRoomTypeById = async (req, res) => {
+  const { room_type_id } = req.params;
+  try {
+    const [rows] = await db.promise().query(
+      'SELECT * FROM roomtypes WHERE room_type_id = ?',
+      [room_type_id]
+    );
+    if (rows.length === 0) {
+      return res.status(404).json({ message: 'Room type not found' });
+    }
+    res.json(rows[0]);
+  } catch (err) {
+    console.error('Error fetching room type by ID:', err);
+    res.status(500).json({ message: 'Server error' });
+  }
+};

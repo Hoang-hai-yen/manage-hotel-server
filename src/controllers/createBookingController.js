@@ -40,11 +40,11 @@ exports.createBooking = async (req, res) => {
 
     const [result] = await db.promise().query(
       `INSERT INTO bookings 
-      (guest_fullname, guest_id_card, guest_phone, guest_email, guest_address, guest_type_id, check_in, check_out, room_id, recommended_rooms, room_type_id, adults, children, nightly_rate, payment_method, status) 
-      VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
+      (guest_fullname, guest_id_card, guest_phone, guest_email, guest_address, guest_type_id, check_in, check_out, room_id, room_type_id, adults, children, nightly_rate, payment_method, status) 
+      VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
   [
     guest_fullname, guest_id_card, guest_phone, guest_email, guest_address, guest_type_id,
-    check_in, check_out, room_id || null, recommended_rooms, room_type_id, adults, children,
+    check_in, check_out, room_id || null, room_type_id, adults, children,
     nightly_rate, payment_method, status
   ]
 );

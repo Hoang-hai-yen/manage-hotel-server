@@ -7,7 +7,7 @@ const invoiceController = require('../controllers/invoiceController');
 
 // router.use(auth);
 router.get('/bookings', frontdeskController.getAllBookings);
-router.get('/bookings/:id', frontdeskController.getBookingById);
+router.get('/booking/:id', frontdeskController.getBookingById);
 router.post('/booking', frontdeskController.createBooking);
 router.put('/booking/:id', frontdeskController.updateBooking);
 router.delete('/booking/:id', frontdeskController.deleteBooking);
