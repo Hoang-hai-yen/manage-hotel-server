@@ -1,6 +1,6 @@
 const express = require('express');
 const http = require('http');
-const { Server } = require('socket.io');
+const { init } = require('./socket'); // Import the socket initialization function
 
 const app = express();
 const PORT = process.env.PORT || 3000;
@@ -21,18 +21,7 @@ const reportRoute = require('./routes/reportRoute');
 const profileRoute = require('./routes/profileRoute');  
 
 const server = http.createServer(app);
-const io = new Server(server, {
-  cors: {
-    origin: '*',
-    // methods: ['GET', 'POST'],
-  },
-});
-io.on('connection', (socket) => {
-  console.log('New client connected');
-  socket.on('disconnect', () => {
-    console.log('Client disconnected');
-  });
-});
+const io = init(server); // Initialize socket.io with the server
 
 app.use(express.json());
 
