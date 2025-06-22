@@ -9,6 +9,7 @@ const authRoutes = require('./routes/authRoute');
 const bookingwebRoute = require('./routes/bookingwebRoute');
 const roomRoute = require('./routes/roomRoute');
 const guestTypeRoute = require('./routes/guestTypeRoute');
+const reportRoute = require('./routes/reportRoute');
 
 require('dotenv').config();
 
@@ -26,6 +27,7 @@ app.use('/api/serviceRequest', serviceRequestRoute); // Request Service
 app.use('/api/guests/guestType', guestTypeRoute); // Cái này có ở trong Prices luôn không nhỉ?
 app.use('/api/prices/roomType', roomTypeRoute);  // RoomType APIs
 app.use('/api/prices/service', serviceRoute);    // Service APIs
+app.use('/api/report', reportRoute); // Report APIs
 app.use('/api/bookingweb', bookingwebRoute);
 
 app.listen(PORT, () => {
