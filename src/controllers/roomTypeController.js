@@ -112,7 +112,7 @@ exports.updateRoomByRoomType = (req, res) => {
     const insertQuery = 'UPDATE roomno SET room_floor=?, is_booked=? WHERE room_id=?';
     db.query(
     insertQuery,
-    [room_floor, booking_id || null, is_booked || 0, room_id],
+    [room_floor, is_booked || 0, room_id],
     (err) => {
       if (err) return res.status(500).json(err);
       res.json({ 
