@@ -4,7 +4,8 @@ const reportController = require('../controllers/reportController');
 // const auth = require('../middlewares/adminAuth');
 
 // router.use(auth);
-router.get('/CheckInOut', reportController.getCheckInOutOverview);
+router.get('/BookingStats', reportController.getBookingStats);
+router.get('/InternationalGuestStats', reportController.getInternationalGuestStats);
 router.get('/RoomTypeStats', reportController.getRoomTypeStats);
 router.get('/ServiceStats', reportController.getServiceStats);
 router.get('/RevenueStats', reportController.getRevenueStats);

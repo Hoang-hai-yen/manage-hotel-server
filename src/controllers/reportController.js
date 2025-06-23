@@ -1,17 +1,30 @@
 const db = require('../db');
 const PDFDocument = require("pdfkit");
 
-exports.getCheckInOutOverview = (req, res) => {
-    const query = 
-    "SELECT SUM(CASE WHEN status = 'Checked In' THEN 1 ELSE 0 END) AS total_checked_in, SUM(CASE WHEN status = 'Checked Out' THEN 1 ELSE 0 END) AS total_checked_out FROM bookings WHERE (check_in BETWEEN DATE_FORMAT(CURDATE(), '%Y-%m-01') AND CURDATE()) OR (check_out BETWEEN DATE_FORMAT(CURDATE(), '%Y-%m-01') AND CURDATE())";
+exports.getBookingStats = (req, res) => {
+  const query = 
+  "SELECT COUNT(*) AS total_bookings FROM bookings WHERE status <> 'Due In' AND check_in BETWEEN DATE_FORMAT(CURDATE(), '%Y-%m-01') AND CURDATE()"
+  
+  db.query(query, (err, results) => {
+    if (err) {
+      console.error('Error fetching booking stats:', err);
+      return res.status(500).json({ error: 'Database error' });
+    }
+    res.json(results[0]);
+  });
+}
 
-    db.query(query, (err, results) => {
-        if (err) {
-            console.error('Error fetching check-in/out overview:', err);
-            return res.status(500).json({ error: 'Database error' });
-        }
-        res.json(results[0]);
-    });
+exports.getInternationalGuestStats = (req, res) => {
+  const query = 
+  "SELECT COUNT(*) AS international_guests FROM guests g JOIN bookings b ON g.booking_id = b.booking_id WHERE g.guest_type_id = 2 AND g.status <> 'upcoming' AND b.check_in BETWEEN DATE_FORMAT(CURDATE(), '%Y-%m-01') AND CURDATE()";
+
+  db.query(query, (err, results) => {
+    if (err) {
+      console.error('Error fetching international guest stats:', err);
+      return res.status(500).json({ error: 'Database error' });
+    }
+    res.json(results[0]);
+  });
 }
 
 exports.getRoomTypeStats = (req, res) => {
