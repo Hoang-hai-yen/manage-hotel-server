@@ -4,7 +4,7 @@ exports.createBooking = async (req, res) => {
   const {
     guest_fullname, guest_id_card, guest_phone, guest_email, guest_address,
     guest_type_id, check_in, check_out, room_type_id,
-    adults, children, payment_method, room_id, recommended_rooms, status = 'Due In', companions = []
+    adults, children, payment_method, room_id, status, companions = []
   } = req.body;
 
   if (!guest_fullname || !guest_id_card || !check_in || !check_out || !room_type_id || !adults)
