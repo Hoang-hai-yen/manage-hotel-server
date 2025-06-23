@@ -43,7 +43,7 @@ app.use('/api/report', reportRoute);
 app.use('/api/bookingweb', bookingwebRoute);
 app.use('/api/bookingweb/profile', profileRoute);
 
-app.listen(PORT, () => {
+server.listen(PORT, () => {
   console.log(`🚀 Server running at http://localhost:${PORT}`);
 });
 
