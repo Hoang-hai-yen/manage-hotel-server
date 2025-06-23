@@ -19,12 +19,17 @@ const roomRoute = require('./routes/roomRoute');
 const guestTypeRoute = require('./routes/guestTypeRoute');
 const reportRoute = require('./routes/reportRoute');
 const profileRoute = require('./routes/profileRoute');  
+const cors = require("cors");
+
 
 const server = http.createServer(app);
 const io = init(server); // Initialize socket.io with the server
 
 app.use(express.json());
-
+app.use(cors({
+  origin: "http://localhost:3001", 
+  credentials: true                
+}));
 app.use('/api', authRoutes);              // Login, register
 app.use('/api/frontdesk', frontdeskRoute);
 app.use('/api/reservation', reservationRoute); // Reservation APIs 
