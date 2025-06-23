@@ -126,7 +126,7 @@ exports.updateReservation = async (req, res) => {
         const updateBookingQuery = `
             UPDATE bookings SET 
                 guest_fullname = ?, guest_id_card = ?, guest_phone = ?, guest_email = ?, guest_address = ?, guest_type_id = ?, 
-                check_in = ?, check_out = ?, room_id = ?, room_type_id = ?, adults = ?, children = ?, nightly_rate = ?, payment_method = ?, status = 'Due In'
+                check_in = ?, check_out = ?, room_id = ?, room_type_id = ?, adults = ?, children = ?, nightly_rate = ?, payment_method = ?, status = ?
             WHERE booking_id = ?
             `;
             const updateBookingValues = [
