@@ -1,4 +1,12 @@
 const express = require('express');
+const http = require('http');
+const { init } = require('./socket'); // Import the socket initialization function
+
+const app = express();
+const PORT = process.env.PORT || 3000;
+require('dotenv').config();
+
+
 const frontdeskRoute = require('./routes/frontDeskRoute');
 const reservationRoute = require('./routes/reservationRoute');
 const guestRoute = require('./routes/guestRoute');
@@ -14,10 +22,8 @@ const profileRoute = require('./routes/profileRoute');
 const cors = require("cors");
 
 
-require('dotenv').config();
-
-const app = express();
-const PORT = process.env.PORT || 3000;
+const server = http.createServer(app);
+const io = init(server); // Initialize socket.io with the server
 
 app.use(express.json());
 app.use(cors({
@@ -40,3 +46,5 @@ app.use('/api/bookingweb/profile', profileRoute);
 app.listen(PORT, () => {
   console.log(`🚀 Server running at http://localhost:${PORT}`);
 });
+
+module.exports = { app, server, io }; // Export app and server for testing purposes
