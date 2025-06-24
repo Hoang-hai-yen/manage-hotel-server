@@ -80,10 +80,18 @@ exports.createBooking = async (req, res) => {
     }
 
     await db.promise().query(
-      `INSERT INTO guests (fullname, id_card, guest_type_id, source_type, booking_id, room_id, status)
-       VALUES (?, ?, ?, 'Booking', ?, ?, 'upcoming')`,
-      [guest_fullname, guest_id_card, guest_type.guest_type_id, booking_id, room_id || null]
-    );
+  `INSERT INTO guests (fullname, id_card, address, guest_type_id, source_type, booking_id, room_id, status)
+   VALUES (?, ?, ?, 'Booking', ?, ?, 'upcoming')`,
+  [guest_fullname, guest_id_card, guest_address, guest_type_id, booking_id, room_id || null]
+);
+
+for (const c of companions) {
+  await db.promise().query(
+    `INSERT INTO guests (fullname, id_card, address, guest_type_id, source_type, booking_id, room_id, status)
+     VALUES (?, ?, ?, 'Companion', ?, ?, 'upcoming')`,
+    [c.fullname, c.id_card, c.address, c.guest_type_id, booking_id, room_id || null]
+  );
+}
 
     const [bookingRows] = await db.promise().query(
       `SELECT b.*, rt.room_type_name, gt.guest_type_name

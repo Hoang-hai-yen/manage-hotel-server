@@ -26,7 +26,7 @@ const io = init(server); // Initialize socket.io with the server
 
 app.use(express.json());
 app.use(cors({
-  origin: "http://localhost:3001",
+  origin: "*",
   credentials: true
 }));
 
