@@ -68,6 +68,30 @@ exports.createReservation = (req, res) => {
 
   const guest_account_id = req.user.guest_account_id;
 
+    if (!guest_fullname || !guest_cccd || !guest_phone || !guest_email || !guest_address ||
+        !guest_type_id || !check_in || !check_out || !room_type_id ||
+        !number_of_rooms || !adults || !children) {
+    return res.status(400).json({ message: 'All fields are required' });
+  }
+    if (new Date(check_in) >= new Date(check_out)) {
+    return res.status(400).json({ message: 'Check-out date must be after check-in date' });
+  }
+    if (number_of_rooms <= 0) {
+    return res.status(400).json({ message: 'Number of rooms must be greater than zero' });
+    }
+    if (adults < 0 || children < 0) {
+    return res.status(400).json({ message: 'Number of adults and children cannot be negative' });
+  }
+    if (!/^\d{12}$/.test(guest_cccd)) {
+    return res.status(400).json({ message: 'CCCD must be a 12-digit number' });
+  }
+    if (!/^\d{10}$/.test(guest_phone)) {
+    return res.status(400).json({ message: 'Phone number must be a 10-digit number' });
+  }
+    if (!/^[\w-]+(\.[\w-]+)*@([\w-]+\.)+[a-zA-Z]{2,7}$/.test(guest_email)) {
+    return res.status(400).json({ message: 'Invalid email format' });
+  }
+
   const availableRoomsQuery = `
         SELECT r.room_id FROM roomno r
         WHERE r.room_type_id = ?
@@ -125,6 +149,7 @@ exports.createReservation = (req, res) => {
         res.status(201).json({
           message: 'Reservation created successfully',
           reservation_id: result.insertId,
+            guest_cccd,
           recommended_rooms: suitableRooms,
           room_type_id
         });
@@ -161,6 +186,11 @@ exports.updateReservation = async (req, res) => {
         }
         const reservation = reservationRows[0];
         if (status === "Confirmed") {
+            if (!assigned_room) {
+                return res.status(400).json({
+                    error: "Assigned room is required for confirmed reservations",
+                });
+            }
             let roomIDs = [];
             if (typeof assigned_room === "string") {
                 roomIDs = assigned_room.split(",").map(id => id.trim());
@@ -214,7 +244,7 @@ exports.updateReservation = async (req, res) => {
                     VALUES (?, ?, ?, ?, ?, ?, ?, ?)`,
                     [
                         reservation.guest_fullname,
-                        reservation.guest_id_card,
+                        reservation.guest_cccd,
                         reservation.guest_address,
                         reservation.guest_type_id,
                         "Booking",
@@ -254,6 +284,11 @@ exports.updateReservation = async (req, res) => {
         }
 
         if (status === "Declined") {
+            if (!declined_reason) {
+                return res.status(400).json({
+                    error: "Declined reason is required for declined reservations",
+                });
+            }
             const transporter = nodemailer.createTransport({
                 host: "smtp.gmail.com",
                 port: 587,
