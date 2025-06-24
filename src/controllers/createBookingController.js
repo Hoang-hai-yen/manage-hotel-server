@@ -4,7 +4,7 @@ exports.createBooking = async (req, res) => {
   const {
     guest_fullname, guest_id_card, guest_phone, guest_email, guest_address,
     guest_type_id, check_in, check_out, room_type_id,
-    adults, children, payment_method, room_id, recommended_rooms, status = 'Due In', companions = []
+    adults, children, payment_method, room_id, status = 'Due In', companions = []
   } = req.body;
 
   if (!guest_fullname || !guest_id_card || !check_in || !check_out || !room_type_id || !adults)
@@ -40,11 +40,11 @@ exports.createBooking = async (req, res) => {
 
     const [result] = await db.promise().query(
       `INSERT INTO bookings 
-      (guest_fullname, guest_id_card, guest_phone, guest_email, guest_address, guest_type_id, check_in, check_out, room_id, recommended_rooms, room_type_id, adults, children, nightly_rate, payment_method, status) 
-      VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
+      (guest_fullname, guest_id_card, guest_phone, guest_email, guest_address, guest_type_id, check_in, check_out, room_id, room_type_id, adults, children, nightly_rate, payment_method, status) 
+      VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
   [
     guest_fullname, guest_id_card, guest_phone, guest_email, guest_address, guest_type_id,
-    check_in, check_out, room_id || null, recommended_rooms, room_type_id, adults, children,
+    check_in, check_out, room_id || null, room_type_id, adults, children,
     nightly_rate, payment_method, status
   ]
 );
