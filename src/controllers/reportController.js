@@ -55,7 +55,7 @@ exports.getServiceStats = (req, res) => {
 
 exports.getRevenueStats = (req, res) => {
     const query =
-    'SELECT YEAR(b.check_out) AS year, MONTH(b.check_out) AS month, SUM(total_amount) AS total_revenue FROM invoices i JOIN bookings b ON i.booking_id = b.booking_id WHERE b.check_out BETWEEN DATE_FORMAT(CURDATE(), "%Y-01-01") AND CURDATE() GROUP BY year, month ORDER BY year DESC, month DESC';
+    'SELECT YEAR(b.check_out) AS year, MONTH(b.check_out) AS month, SUM(total_amount) AS total_revenue FROM invoices i JOIN bookings b ON i.booking_id = b.booking_id GROUP BY year, month ORDER BY year DESC, month ASC';
 
     db.query(query, (err, results) => {
         if (err) {
