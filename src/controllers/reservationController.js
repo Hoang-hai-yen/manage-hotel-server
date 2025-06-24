@@ -159,15 +159,13 @@ exports.updateReservation = async (req, res) => {
         const reservation = reservationRows[0];
         if (status === "Confirmed") {
             let roomIDs = [];
-            if (Array.isArray(assigned_room)) {
+            if (typeof assigned_room === "string") {
+                roomIDs = assigned_room.split(",").map(id => id.trim());
+                } else if (Array.isArray(assigned_room)) {
                 roomIDs = assigned_room;
-            } else {
-                try {
-                    roomIDs = JSON.parse(assigned_room);
-                } catch {
-                    roomIDs = [assigned_room];
+                } else {
+                roomIDs = [];
                 }
-            }
             for (const roomID of roomIDs) {
                 const queryBooking = `INSERT INTO bookings 
           (guest_fullname, guest_id_card, guest_phone, guest_email, guest_address, guest_type_id, check_in, check_out, room_id, room_type_id, adults, children, status) 
