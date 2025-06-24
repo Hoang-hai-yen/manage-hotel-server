@@ -36,7 +36,7 @@ app.use('/api/reservation', reservationRoute);
 app.use('/api/guests', guestRoute);
 app.use('/api/room', roomRoute);
 app.use('/api/serviceRequest', serviceRequestRoute);
-app.use('/api/guests/guestType', guestTypeRoute);
+app.use('/api/prices/guestType', guestTypeRoute);
 app.use('/api/prices/roomType', roomTypeRoute);
 app.use('/api/prices/service', serviceRoute);
 app.use('/api/report', reportRoute);
