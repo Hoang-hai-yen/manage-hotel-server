@@ -13,7 +13,7 @@ router.post('/signin', signin);
 router.post('/forgot-password', forgotPassword);
 router.post('/verify-otp', verifyOtp);
 
-router.post('/reservation', reserve.createReservation)
-router.get('/:guest_id/mybookings', reserve.getReservationsByGuest);
+router.post('/reservation', auth, reserve.createReservation);
+router.get('/mybookings', auth, reserve.getReservationsByGuest);
 
 module.exports = router;
