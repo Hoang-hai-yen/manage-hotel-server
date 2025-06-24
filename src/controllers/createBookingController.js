@@ -11,6 +11,14 @@ exports.createBooking = async (req, res) => {
 
   if (!guest_fullname || !guest_id_card || !check_in || !check_out || !room_type_id || !adults || !guest_type_name)
     return res.status(400).json({ message: 'Missing required fields' });
+  if (new Date(check_in) >= new Date(check_out))
+    return res.status(400).json({ message: 'Check-out date must be after check-in date' });
+  if (new Date(check_in) < new Date())
+    return res.status(400).json({ message: 'Check-in date cannot be in the past' });
+  if (adults < 1)
+    return res.status(400).json({ message: 'At least 1 adult is required' });
+  if (companions.some(c => !c.fullname || !c.id_card || !c.guest_type_id))
+    return res.status(400).json({ message: 'Companion details are incomplete' });
 
   try {
     const [guestTypeRows] = await db.promise().query(
@@ -186,6 +194,14 @@ exports.updateBooking = async (req, res) => {
     guest_type_name, check_in, check_out, room_id, room_type_id,
     adults, children, nightly_rate, payment_method, status = 'Due In', companions = []
   } = req.body;
+  if (!guest_fullname || !guest_id_card || !check_in || !check_out || !room_type_id || !adults || !guest_type_name)
+    return res.status(400).json({ message: 'Missing required fields' });
+  if (new Date(check_in) >= new Date(check_out))
+    return res.status(400).json({ message: 'Check-out date must be after check-in date' });
+  if (new Date(check_in) < new Date())
+    return res.status(400).json({ message: 'Check-in date cannot be in the past' });
+  if (adults < 1)
+    return res.status(400).json({ message: 'At least 1 adult is required' });
 
   try {
     const [guestTypeRows] = await db.promise().query(
