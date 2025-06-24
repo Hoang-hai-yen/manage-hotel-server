@@ -30,26 +30,8 @@ exports.createRequest = (req, res) => {
       if (serviceResult.length === 0) {
         return res.status(400).json({ error: 'service_id không tồn tại' });
       }
-      const insertSql = `
-          INSERT INTO servicerequests (booking_id, room_id, service_id, amount, note )
-          VALUES (?, ?, ?, ?, ?)
-        `;
-        db.query(insertSql, [booking_id, room_id, service_id, amount, note], (err, result) => {
-          if (err) return res.status(500).json({ error: 'Lỗi khi thêm dịch vụ', detail: err });
-
-          res.status(201).json({
-            message: 'Tạo yêu cầu dịch vụ thành công',
-            request_id: result.insertId,
-            booking_id: booking_id || null,
-            room_id: room_id || null,
-            service_id: service_id || null,
-            amount,
-            note,
-            status: 'Awaiting'
-          });
-        });
       // 4. Kiểm tra booking_id tồn tại
-      /* const checkBookingSql = 'SELECT * FROM bookings WHERE booking_id = ?';
+      const checkBookingSql = 'SELECT * FROM bookings WHERE booking_id = ?';
       db.query(checkBookingSql, [booking_id], (err, bookingResult) => {
         if (err) return res.status(500).json({ error: 'Lỗi truy vấn booking_id', detail: err });
         if (bookingResult.length === 0) {
@@ -75,7 +57,7 @@ exports.createRequest = (req, res) => {
             status: 'Awaiting'
           });
         });
-      }); */
+      });
     });
   });
 };

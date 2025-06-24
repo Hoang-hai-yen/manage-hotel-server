@@ -16,10 +16,13 @@ exports.getReservations = (req, res) => {
 };
 
 exports.getReservationById = (req, res) => {
-    const reservation_id = req.params.id;
+    const reservationIDasNumber = parseInt(req.params.reservation_id, 10);
+    if (isNaN(reservationIDasNumber)) {
+        return res.status(400).json({ error: "Invalid reservation ID" });
+    }
     const query = "SELECT * FROM reservations WHERE reservation_id = ?";
 
-    db.query(query, [reservation_id], (err, results) => {
+    db.query(query, [reservationIDasNumber], (err, results) => {
         if (err) {
             console.error("Error fetching reservation:", err);
             return res.status(500).json({ error: "Database error" });
