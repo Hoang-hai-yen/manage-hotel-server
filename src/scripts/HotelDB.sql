@@ -138,6 +138,7 @@ CREATE TABLE `guests` (
   `guest_id` int(11) NOT NULL,
   `fullname` varchar(100) DEFAULT NULL,
   `id_card` varchar(20) DEFAULT NULL,
+  `address` varchar(255) DEFAULT NULL,
   `guest_type_id` int(11) DEFAULT NULL,
   `source_type` enum('Booking','Companion') DEFAULT NULL,
   `booking_id` int(11) DEFAULT NULL,
@@ -149,14 +150,14 @@ CREATE TABLE `guests` (
 -- Dumping data for table `guests`
 --
 
-INSERT INTO `guests` (`guest_id`, `fullname`, `id_card`, `guest_type_id`, `source_type`, `booking_id`, `room_id`, `status`) VALUES
-(1, 'Nguyễn Văn Test', '0123456789', 1, 'Booking', 1, 'A101', 'upcoming'),
-(2, 'Trần Thị B', '987654321', 2, 'Companion', 1, 'A101', 'upcoming'),
-(3, 'Lê Văn C', '567890123', 1, 'Companion', 1, 'A101', 'upcoming'),
-(4, 'Phạm Ngọc D', '777888999', 2, 'Companion', 1, 'A101', 'upcoming'),
-(5, 'Ngô Minh E', '888999000', 1, 'Companion', 1, 'A101', 'upcoming'),
-(6, 'Lê Thị Trùng', '999888777', 1, 'Booking', NULL, 'A101', 'upcoming'),
-(7, 'Nguyễn Thị P', '888777666', 2, 'Companion', NULL, 'A101', 'upcoming');
+INSERT INTO `guests` (`guest_id`, `fullname`, `id_card`, `address`, `guest_type_id`, `source_type`, `booking_id`, `room_id`, `status`) VALUES
+(1, 'Nguyễn Văn Test', '0123456789', '123 Lê Văn Sỹ, Quận 3', 1, 'Booking', 1, 'A101', 'upcoming'),
+(2, 'Trần Thị B', '987654321', '456 Hai Bà Trưng, TP.HCM', 2, 'Companion', 1, 'A101', 'upcoming'),
+(3, 'Lê Văn C', '567890123', '789 Nguyễn Trãi, TP.HCM', 1, 'Companion', 1, 'A101', 'upcoming'),
+(4, 'Phạm Ngọc D', '777888999', '123 Pasteur, TP.HCM', 2, 'Companion', 1, 'A101', 'upcoming'),
+(5, 'Ngô Minh E', '888999000', '654 Trần Hưng Đạo, TP.HCM', 1, 'Companion', 1, 'A101', 'upcoming'),
+(6, 'Lê Thị Trùng', '999888777', '789 Nguyễn Trãi, TP.HCM', 1, 'Booking', NULL, 'A101', 'upcoming'),
+(7, 'Nguyễn Thị P', '888777666', '123 Pasteur, TP.HCM', 2, 'Companion', NULL, 'A101', 'upcoming');
 
 -- --------------------------------------------------------
 

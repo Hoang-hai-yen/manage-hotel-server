@@ -245,11 +245,12 @@ exports.updateReservation = async (req, res) => {
                         );
                 }
                 await db.promise().query(
-                    `INSERT INTO guests (fullname, id_card, guest_type_id, source_type, booking_id, room_id, status)
+                    `INSERT INTO guests (fullname, id_card, address, guest_type_id, source_type, booking_id, room_id, status)
             VALUES (?, ?, ?, 'Booking', ?, ?, 'upcoming')`,
                     [
                         reservation.guest_fullname,
                         reservation.guest_id_card,
+                        reservation.guest_address,
                         reservation.guest_type_id,
                         bookingId,
                         roomID || null,
