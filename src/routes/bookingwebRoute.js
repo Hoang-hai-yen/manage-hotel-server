@@ -12,6 +12,8 @@ router.post('/signup', signup);
 router.post('/signin', signin);
 router.post('/forgot-password', forgotPassword);
 router.post('/verify-otp', verifyOtp);
+
 router.post('/reservation', reserve.createReservation)
+router.get('/:guest_id/mybookings', reserve.getReservationsByGuest);
 
 module.exports = router;

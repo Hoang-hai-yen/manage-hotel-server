@@ -11,6 +11,9 @@ exports.getGuestTypes = (req, res) => {
 // POST create guest type
 exports.createGuestType = (req, res) => {
   const { guest_type_name, surcharge_rate } = req.body;
+  if (!guest_type_name || !surcharge_rate) {
+    return res.status(400).json({ error: 'guest_type_name and surcharge_rate are required' });
+  }
   db.query(
     'INSERT INTO guest_types ( guest_type_name, surcharge_rate) VALUES (?, ?)',
     [guest_type_name, surcharge_rate],

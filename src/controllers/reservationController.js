@@ -34,6 +34,19 @@ exports.getReservationById = (req, res) => {
     });
 };
 
+exports.getReservationsByGuest = (req, res) => {
+    const { guest_id } = req.params;
+
+    const query = `SELECT * FROM reservations WHERE guest_account_id = ? ORDER BY check_in DESC`;
+    db.query(query, [guest_id], (err, results) => {
+        if (err) {
+            console.error("Error fetching reservations:", err);
+            return res.status(500).json({ error: "Database error" });
+        }
+        res.json(results);
+    });
+}
+
 exports.createReservation = async (req, res) => {
     const {
         guest_fullname,
@@ -54,6 +67,8 @@ exports.createReservation = async (req, res) => {
         !guest_fullname ||
         !guest_phone ||
         !guest_email ||
+        !guest_address ||
+        !guest_type_id ||
         !check_in ||
         !check_out ||
         !number_of_rooms ||
