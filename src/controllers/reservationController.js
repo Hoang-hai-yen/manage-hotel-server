@@ -49,20 +49,22 @@ exports.getReservationsByGuest = (req, res) => {
 
 
 exports.createReservation = (req, res) => {
-  const {
-    guest_fullname,
-    guest_phone,
-    guest_email,
-    guest_address,
-    guest_type_id,
-    check_in,
-    check_out,
-    room_type_id,
-    number_of_rooms,
-    adults,
-    children,
-    reservation_note
-  } = req.body;
+        const {
+        guest_fullname,
+        guest_cccd,
+        guest_phone,
+        guest_email,
+        guest_address,
+        guest_type_id,
+        check_in,
+        check_out,
+        room_type_id,
+        number_of_rooms,
+        adults,
+        children,
+        reservation_note
+        } = req.body;
+
 
   const guest_account_id = req.user.guest_account_id;
 
@@ -90,15 +92,16 @@ exports.createReservation = (req, res) => {
       const insertQuery = `
         INSERT INTO reservations (
           guest_account_id,
-          guest_fullname, guest_phone, guest_email, guest_address, guest_type_id,
+          guest_fullname, guest_cccd, guest_phone, guest_email, guest_address, guest_type_id,
           check_in, check_out, room_type_id, number_of_rooms, adults, children,
           reservation_note, recommended_rooms
-        ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+        ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
       `;
 
       const values = [
         guest_account_id,
         guest_fullname,
+        guest_cccd,
         guest_phone,
         guest_email,
         guest_address,
@@ -206,18 +209,22 @@ exports.updateReservation = async (req, res) => {
                             [bookingId, roomID]
                         );
                 }
-                await db.promise().query(
+                    await db.promise().query(
                     `INSERT INTO guests (fullname, id_card, address, guest_type_id, source_type, booking_id, room_id, status)
-            VALUES (?, ?, ?, 'Booking', ?, ?, 'upcoming')`,
+                    VALUES (?, ?, ?, ?, ?, ?, ?, ?)`,
                     [
                         reservation.guest_fullname,
                         reservation.guest_id_card,
                         reservation.guest_address,
                         reservation.guest_type_id,
+                        "Booking",
                         bookingId,
                         roomID || null,
+                        "upcoming",
                     ]
-                );
+                    );
+
+
             }
 
             const transporter = nodemailer.createTransport({

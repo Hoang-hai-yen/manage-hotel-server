@@ -251,18 +251,35 @@ exports.updateBooking = async (req, res) => {
   }
 };
 
-// DELETE BOOKING
 exports.deleteBooking = async (req, res) => {
   const booking_id = req.params.id;
+  const connection = db.promise();
 
   try {
-    await db.promise().query(`DELETE FROM bookingcompanions WHERE booking_id = ?`, [booking_id]);
-    await db.promise().query(`DELETE FROM guests WHERE booking_id = ?`, [booking_id]);
-    await db.promise().query(`DELETE FROM room_bookings WHERE booking_id = ?`, [booking_id]);
-    await db.promise().query(`DELETE FROM bookings WHERE booking_id = ?`, [booking_id]);
-    res.json({ message: 'Booking deleted successfully' });
+    await connection.beginTransaction();
+
+    await connection.query(`DELETE FROM invoiceservices WHERE booking_id = ?`, [booking_id]);
+    await connection.query(`DELETE FROM invoicedetails WHERE booking_id = ?`, [booking_id]);
+    await connection.query(`DELETE FROM invoices WHERE booking_id = ?`, [booking_id]);
+    await connection.query(`DELETE FROM servicerequests WHERE booking_id = ?`, [booking_id]);
+    await connection.query(`DELETE FROM bookingcompanions WHERE booking_id = ?`, [booking_id]);
+    await connection.query(`DELETE FROM guests WHERE booking_id = ?`, [booking_id]);
+    await connection.query(`DELETE FROM room_bookings WHERE booking_id = ?`, [booking_id]);
+    const [deleteResult] = await connection.query('DELETE FROM bookings WHERE booking_id = ?', [booking_id]);
+    
+    if (deleteResult.affectedRows === 0) {
+        throw new Error('Booking not found or already deleted');
+    }
+
+    await connection.commit();
+    res.json({ message: 'Booking and all related data deleted successfully' });
+
   } catch (err) {
-    console.error(err);
-    res.status(500).json({ error: 'Failed to delete booking' });
+    await connection.rollback();
+    console.error(`Transaction ROLLBACK. Error deleting booking ID ${booking_id}:`, err);
+    res.status(500).json({ error: 'Failed to delete booking. A server error occurred.' });
+  } finally {
+      connection.release();
   }
 };
+
