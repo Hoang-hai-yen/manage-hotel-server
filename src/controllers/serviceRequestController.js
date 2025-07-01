@@ -15,30 +15,15 @@ exports.createRequest = (req, res) => {
     return res.status(400).json({ error: 'amount phải > 0' });
   }
 
-  // 2. Kiểm tra room_id có đang được book không
-  const checkRoomSql = 'SELECT * FROM roomno WHERE room_id = ? AND is_booked = 0';
-  db.query(checkRoomSql, [room_id], (err, roomResult) => {
-    if (err) return res.status(500).json({ error: 'Lỗi truy vấn room_id', detail: err });
-    if (roomResult.length === 0) {
-      return res.status(400).json({ error: 'room_id không tồn tại hoặc chưa được đặt' });
-    }
-
-    // 3. Kiểm tra service_id tồn tại
+  // 3. Kiểm tra service_id tồn tại
     const checkServiceSql = 'SELECT * FROM services WHERE service_id = ?';
     db.query(checkServiceSql, [service_id], (err, serviceResult) => {
       if (err) return res.status(500).json({ error: 'Lỗi truy vấn service_id', detail: err });
       if (serviceResult.length === 0) {
         return res.status(400).json({ error: 'service_id không tồn tại' });
       }
-      // 4. Kiểm tra booking_id tồn tại
-      const checkBookingSql = 'SELECT * FROM bookings WHERE booking_id = ?';
-      db.query(checkBookingSql, [booking_id], (err, bookingResult) => {
-        if (err) return res.status(500).json({ error: 'Lỗi truy vấn booking_id', detail: err });
-        if (bookingResult.length === 0) {
-          return res.status(400).json({ error: 'booking_id không tồn tại' });
-        }
 
-        // 5. Insert vào servicerequests
+      // 5. Insert vào servicerequests
         const insertSql = `
           INSERT INTO servicerequests (room_id, service_id, amount, note, booking_id)
           VALUES (?, ?, ?, ?, ?)
@@ -57,9 +42,28 @@ exports.createRequest = (req, res) => {
             status: 'Awaiting'
           });
         });
-      });
+      // 4. Kiểm tra booking_id tồn tại
+      /* const checkBookingSql = 'SELECT * FROM bookings WHERE booking_id = ?';
+      db.query(checkBookingSql, [booking_id], (err, bookingResult) => {
+        if (err) return res.status(500).json({ error: 'Lỗi truy vấn booking_id', detail: err });
+        if (bookingResult.length === 0) {
+          return res.status(400).json({ error: 'booking_id không tồn tại' });
+        }
+
+        
+      }); */
     });
-  });
+
+  /* // 2. Kiểm tra room_id có đang được book không
+  const checkRoomSql = 'SELECT * FROM roomno WHERE room_id = ? AND is_booked = 0';
+  db.query(checkRoomSql, [room_id], (err, roomResult) => {
+    if (err) return res.status(500).json({ error: 'Lỗi truy vấn room_id', detail: err });
+    if (roomResult.length === 0) {
+      return res.status(400).json({ error: 'room_id không tồn tại hoặc chưa được đặt' });
+    }
+
+    
+  }); */
 };
 
 exports.updateRequest = (req, res) => {

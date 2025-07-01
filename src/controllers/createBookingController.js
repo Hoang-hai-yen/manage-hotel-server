@@ -259,6 +259,13 @@ exports.updateBooking = async (req, res) => {
         [c.fullname, c.id_card, c.guest_type_id, booking_id, room_id || null, guestStatus]
       );
     }
+    // Update is_booked trong bảng roomno dựa vào status
+if (status === 'Checked In') {
+  await db.promise().query(`UPDATE roomno SET is_booked = 1 WHERE room_id = ?`, [room_id]);
+} else if (status === 'Checked Out') {
+  await db.promise().query(`UPDATE roomno SET is_booked = 0 WHERE room_id = ?`, [room_id]);
+}
+
 
     res.json({ message: 'Booking updated successfully' });
   } catch (err) {
